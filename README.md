@@ -1,74 +1,59 @@
-# SOME
-SOME: Singing-Oriented MIDI Extractor.
+# 一键扒谱
 
-> WARNING
->
-> This project is under beta version now. No backward compatibility is guaranteed.
+本项目fork自https://github.com/openvpi/SOME
 
-## Overview
 
-SOME is a MIDI extractor that can convert singing voice to MIDI sequence, with the following advantages:
-
-1. Speed: 9x faster than real-time on an i5 12400 CPU, and 300x on a 3080Ti GPU.
-2. Low resource dependency: SOME can be trained on custom dataset, and can achieve good results with only 3 hours of training data.
-3. Functionality: SOME can produce non-integer MIDI values, which is specially suitable for DiffSinger variance labeling.
-
-## Getting Started
-
-> 中文教程 / Chinese Tutorials: [Text](https://openvpi-docs.feishu.cn/wiki/RaHSwdMQvisdcKkRFpqclhM7ndc), [Video](https://www.bilibili.com/video/BV1my4y1N7VR)
-
-### Installation
-
-SOME requires Python 3.8 or later. We strongly recommend you create a virtual environment via Conda or venv before installing dependencies.
-
-1. Install PyTorch 2.1 or later following the [official instructions](https://pytorch.org/get-started/locally/) according to your OS and hardware.
-
-2. Install other dependencies via the following command:
+## 安装依赖
 
    ```bash
    pip install -r requirements.txt
    ```
 
-3. (Optional) For better pitch extraction results, please download the RMVPE pretrained model from [here](https://github.com/yxlllc/RMVPE/releases) and extract it into `pretrained/` directory.
+### 下载模型
 
-### Inference via pretrained model
-
-Download pretrained model of SOME from [releases](https://github.com/openvpi/SOME/releases) and extract them somewhere.
-
-To infer with CLI, run the following command:
-
-```bash
-python infer.py --model CKPT_PATH --wav WAV_PATH
+```
+链接：https://pan.baidu.com/s/1lVQcKP7ijTELslJNgoDqkQ?pwd=odsm 
 ```
 
-This will load model at CKPT_PATH, extract MIDI from audio file at WAV_PATH and save a MIDI file. For more useful options, run
+2stems模型放到项目的pretrained_models目录下
 
-```bash
-python infer.py --help
+ckpt模型放入项目的ckpt目录下
+
+如果没有ckpt和pretrained_models目录，请手动建立。
+
+如下所示：
+
+```
+├───ckpt
+│       config.yaml
+│       model_ckpt_steps_104000_simplified.ckpt
+├───pretrained_models
+│   └───2stems
+│           ._checkpoint
+│           checkpoint
+│           model.data-00000-of-00001
+│           model.index
+│           model.meta
+```
+### 人声和背景音分离
+
+如果没有output目录，请手动建立，test.mp3为需要扒谱的音乐文件
+
+```
+spleeter separate -p spleeter:2stems -o ./output ./test.mp3   
 ```
 
-To infer with Web UI, run the following command:
+### 人声降噪
 
-```bash
-python webui.py --work_dir WORK_DIR
+```
+python test_noisereduce.py
 ```
 
-Then you can open the gradio interface through your browser and use the models under WORK_DIR following the instructions on the web page. For more useful options, run
+### 扒谱（人声转换为midi）
 
-```bash
-python webui.py --help
+```
+python infer.py --model ./ckpt/model_ckpt_steps_104000_simplified.ckpt --wav ./output/vocals.wav  
 ```
 
-### Training from scratch
-
-_Training scripts are uploaded but may not be well-organized yet. For the best compatibility, we suggest training your own model after a stable release in the future._
-
-
-## Disclaimer
-
-Any organization or individual is prohibited from using any recordings obtained without consent from the provider as training data. If you do not comply with this item, you could be in violation of copyright laws or software EULAs.
-
-## License
-
-SOME is licensed under the [MIT License](LICENSE).
+midi存储于项目的output目录下
 
