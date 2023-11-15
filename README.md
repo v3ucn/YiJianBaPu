@@ -52,7 +52,7 @@ python test_noisereduce.py
 ### 扒谱（人声转换为midi）
 
 ```
-python infer.py --model ./ckpt/model_ckpt_steps_104000_simplified.ckpt --wav ./output/vocals.wav  
+python infer.py --model ./ckpt/model_ckpt_steps_104000_simplified.ckpt --wav ./output/test/vocals.wav  
 ```
 
 midi存储于项目的output目录下
